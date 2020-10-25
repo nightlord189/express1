@@ -1,13 +1,23 @@
-const  express = require('express');
+const express = require('express');
+const hbs = require ('hbs');
 const app = express();
 const port = 3000
 
 //set view engine
 app.set("view engine", "hbs");
 
+//static files
+app.use(express.static('public'));
+
 //simple get-request
 app.get('/', (request, response) => {
-    response.send('Главная страница');
+    response.send(`<h1>Главная страница</h1> 
+        <a href="/redirect">Редирект</a><br>
+        <a href="/home/foo/bar">Bad request 400</a><br>
+        <a href="/about?id=1&name=User1">Query-параметры</a><br>
+        <a href="/categories/tv/products/Samsung">URL-параметры</a><br>
+        <a href="/contact">Шаблоны</a>`
+    );
 });
 
 //http-code
@@ -37,9 +47,10 @@ app.get("/categories/:categoryId/products/:productId", function (request, respon
 //controller with view
 app.use("/contact", (request, response) =>{
     response.render("contact.hbs", {
-        title: "Мои контакты",
+        title: "Контакты",
         email: "some@email.com",
-        phone: "+1234567890"
+        phone: "+1234567890",
+        currentTime: (new Date()).toLocaleTimeString(),
     });
 });
 
